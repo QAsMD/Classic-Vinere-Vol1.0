@@ -10,26 +10,27 @@ const int n = 50;
 
 using namespace std;
 
-///
-/// Function podh_drob
-///
-/// This function calculates continued fraction's 
-/// denominator for specified E and N.
-///
-/// The answer is stored two LINT array Q[n]
-///
-/// Arguments:
-///
-///		E - public key
-///		
-///		N - ...
-///
-///		*Q - pointer to denominator array
-///		
-/// Return value: none
-///
+/* 
+Function convergent
 
-void podh_drob(LINT E, LINT N, LINT* Q)
+This function calculates continued fraction's 
+denominator for specified E and N.
+
+The answer is stored two LINT array Q[n]
+
+Arguments:
+
+E - the first part of public key		
+N - the second part of public key
+*Q - pointer to denominator array
+		
+Return value: none
+ */
+
+
+
+
+void convergent(LINT E, LINT N, LINT* Q)
 {
 	LINT V[n];
 	LINT H[n];
@@ -68,6 +69,26 @@ void podh_drob(LINT E, LINT N, LINT* Q)
 	}
 }
 
+
+/*
+Function extended_euclid
+
+This function calculates coefficients a, b and GCD(a,b) 
+in comparison a*x+b*y=GCD(a,b)
+
+The answer is stored three LINT: x,y,d
+
+Arguments:
+
+a - the first coefficient in comparison
+b - the second coefficient in comparison
+x - the first variable in comparison
+y - the second variable in comparison
+d - greatest common divisor of a and b
+
+Return value: none
+*/
+
 void extended_euclid(
 	__in	LINT a, 
 	__in	LINT b, 
@@ -98,6 +119,26 @@ while (b > 0)
 	*d = a, *x = x2, *y = y2;
 }
 
+
+
+
+/*
+Function Vinere
+
+This function calculates the private part of key 
+with using open part of key (E,N)
+
+The answer is the private part of key D
+
+Arguments:
+
+E - the first part of public key
+N - the second part of public key
+D - the part of private key
+
+Return value: none
+*/
+
 void Vinere(
 	__in LINT E, 
 	__in LINT N,
@@ -106,7 +147,7 @@ void Vinere(
 	LINT potential_D[n];
 	LINT limitD = root(root(N/3)) - 1;
 
-	podh_drob(E, N, potential_D);
+	convergent(E, N, potential_D);
 
 	for (LINT M = 2; M < N; M++)
 	{
@@ -125,6 +166,26 @@ void Vinere(
 	}
 	return;
 }
+
+
+
+
+/*
+Function Vulnerable_Generator
+
+This function recieves public part of key from
+couple p,q
+
+The answer is the public part of key E,N
+
+Arguments:
+
+primes_vector - vector primes
+*E - the first part of public key
+*N - the second part of public key
+
+Return value: none
+*/
 
 void Vulnerable_Generator(
 	__in vector <LINT> primes_vector, 
