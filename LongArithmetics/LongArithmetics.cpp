@@ -4,8 +4,8 @@
 #pragma once
 #include "stdafx.h"
 
-#define E_LOWER_VALUE "200000000"
-#define E_UPPER_VALUE "1000000000000000000000000000000"
+#define E_LOWER_VALUE "0"//"200000000"
+#define E_UPPER_VALUE "100000000000000000000000000000010000000000000000000000000000001000000000000000000000000000000100000000000000000000000000000010000000000000000000000000000001000000000000000000000000000000"//"1000000000000000000000000000000"
 const int n = 50;
 
 using namespace std;
@@ -20,17 +20,15 @@ The answer is stored two LINT array Q[n]
 
 Arguments:
 
-E - the first part of public key		
-N - the second part of public key
-*Q - pointer to denominator array
+		E - the first part of public key		
+		N - the second part of public key
+		*Q - pointer to denominator array
 		
-Return value: none
+Return value: 
+		None
  */
 
-
-
-
-void convergent(
+void Convergent(
 	__in	LINT E, 
 	__in	LINT N, 
 	__out	LINT* Q)
@@ -72,7 +70,6 @@ void convergent(
 	}
 }
 
-
 /*
 Function extended_euclid
 
@@ -83,13 +80,14 @@ The answer is stored three LINT: x,y,d
 
 Arguments:
 
-a - the first coefficient in comparison
-b - the second coefficient in comparison
-x - the first variable in comparison
-y - the second variable in comparison
-d - greatest common divisor of a and b
+		a - the first coefficient in comparison
+		b - the second coefficient in comparison
+		x - the first variable in comparison
+		y - the second variable in comparison
+		d - greatest common divisor of a and b
 
-Return value: none
+Return value: 
+		None
 */
 
 void extended_euclid(
@@ -122,9 +120,6 @@ while (b > 0)
 	*d = a, *x = x2, *y = y2;
 }
 
-
-
-
 /*
 Function Vinere
 
@@ -135,11 +130,12 @@ The answer is the private part of key D
 
 Arguments:
 
-E - the first part of public key
-N - the second part of public key
-D - the part of private key
+		E - the first part of public key
+		N - the second part of public key
+		D - the part of private key
 
-Return value: none
+Return value: 
+		None
 */
 
 void Vinere(
@@ -150,7 +146,7 @@ void Vinere(
 	LINT potential_D[n];
 	LINT limitD = root(root(N/3)) - 1;
 
-	convergent(E, N, potential_D);
+	Convergent(E, N, potential_D);
 
 	for (LINT M = 2; M < N; M++)
 	{
@@ -170,9 +166,6 @@ void Vinere(
 	return;
 }
 
-
-
-
 /*
 Function Vulnerable_Generator
 
@@ -183,11 +176,12 @@ The answer is the public part of key E,N
 
 Arguments:
 
-primes_vector - vector primes
-*E - the first part of public key
-*N - the second part of public key
+		primes_vector - vector primes
+		*E - the first part of public key
+		*N - the second part of public key
 
-Return value: none
+Return value: 
+		None
 */
 
 void Vulnerable_Generator(
@@ -200,10 +194,10 @@ void Vulnerable_Generator(
 	LINT NOD;
 	LINT koef;
 
-	for (int i = 0; i < (primes_vector.size() - 1); i++)
+	for (size_t i = 0; i < (primes_vector.size() - 1); i++)
 	{
 		p = primes_vector[i];
-		for (int j = i + 1; j < primes_vector.size(); j++)
+		for (size_t j = i + 1; j < primes_vector.size(); j++)
 		{
 			q = primes_vector[j];
 
@@ -233,11 +227,12 @@ void Vulnerable_Generator(
 	}
 }
 
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	vector <LINT> primes_vector;
 	ifstream FILE_read;
-	FILE_read.open("11-20.txt");
+	FILE_read.open("128.txt");
 
 	LINT E;
 	LINT N;
