@@ -30,7 +30,10 @@ Return value: none
 
 
 
-void convergent(LINT E, LINT N, LINT* Q)
+void convergent(
+	__in	LINT E, 
+	__in	LINT N, 
+	__out	LINT* Q)
 {
 	LINT V[n];
 	LINT H[n];
