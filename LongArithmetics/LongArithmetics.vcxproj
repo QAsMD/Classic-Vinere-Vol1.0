@@ -81,6 +81,7 @@
   <ItemGroup>
     <Text Include="128.txt">
       <DeploymentContent>true</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </Text>
     <Text Include="ReadMe.txt" />
   </ItemGroup>

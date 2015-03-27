@@ -4,9 +4,8 @@
 #pragma once
 #include "stdafx.h"
 
-#define E_LOWER_VALUE "0"//"200000000"
-#define E_UPPER_VALUE "100000000000000000000000000000010000000000000000000000000000001000000000000000000000000000000100000000000000000000000000000010000000000000000000000000000001000000000000000000000000000000"//"1000000000000000000000000000000"
-const int n = 50;
+const int n = 10000;
+//#define DBG_PRINT
 
 using namespace std;
 
@@ -37,7 +36,7 @@ void Convergent(
 	LINT H[n];
 	LINT Z[n];
 
-	for (int k = 0; k < n; k++) //занулили числители и знаменатели подходящих дробей
+	for (int k = 0; k < n; k++)
 	{
 		H[k] = Z[k] = V[k] = Q[k] = 0;
 	}
@@ -45,7 +44,7 @@ void Convergent(
 	H[0] = E;
 	Z[0] = N;
 
-	for (int i = 0; i<n; i++)
+	for (int i = 0; i< (n-1) ; i++)
 	{
 		if (Z[i] == 0) { break; }
 		else
@@ -66,7 +65,7 @@ void Convergent(
 		//cout << endl << "V[" << i << "]= " << V[i].decstr();
 		if ((V[i]) == 0) break;
 		Q[i] = Q[i - 1] * V[i] + Q[i - 2];
-		cout << "Q[i]: " << Q[i].decstr() << endl;
+		//cout << "Q[i]: " << Q[i].decstr() << endl;
 	}
 }
 
@@ -185,34 +184,25 @@ Return value:
 */
 
 void Vulnerable_Generator(
-	__in vector <LINT> primes_vector, 
+	__in  LINT p,
+	__in  LINT q,
 	__out LINT *E, 
-	__out LINT *N)
+	__out LINT *N,
+	__out LINT *origin_D)
 {
-	LINT p;
-	LINT q;
 	LINT NOD;
 	LINT koef;
 
-	for (size_t i = 0; i < (primes_vector.size() - 1); i++)
-	{
-		p = primes_vector[i];
-		for (size_t j = i + 1; j < primes_vector.size(); j++)
-		{
-			q = primes_vector[j];
-
 		    *N = mul(p,q);
 			LINT eiler_func = mul((p - 1),(q - 1));
-			
 			LINT limitD = root(root((*N) / 3)) - 1;
-
-			
 			for (;limitD > 0; limitD--)
 			{
 				extended_euclid(limitD, eiler_func, E, &koef, &NOD); // E - ответ
 
-				if ((*E > E_LOWER_VALUE) && (*E < E_UPPER_VALUE) && (NOD == 1) && (gcd(*E,eiler_func) == 1))
+				if ((*E < *N) && (NOD == 1) && (gcd(*E,eiler_func) == 1))
 				{
+#ifdef DBG_PRINT
 					cout << "Eiler: " << eiler_func.decstr() << endl;
 					cout << "Finished generating E, D and N." << endl;
 					cout << "E is " << (*E).decstr() << endl;
@@ -220,37 +210,55 @@ void Vulnerable_Generator(
 					cout << "N is " << (*N).decstr() << endl;
 					cout << "p is " << p.decstr() << endl;
 					cout << "q is " << q.decstr() << endl;
+#endif
+					*origin_D = limitD;
 					return;
 				}
 			}
-		}
-	}
+
+			cout << "Couldn't generate public key" << endl;
+			return;
+}
+
+void Prime_Number_Generator(
+	__in int length,
+	__out LINT *P,
+	__out LINT *Q)
+{
+	*P = findprime(length);
+	*Q = nextprime(*P + 1, 3);
 }
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	vector <LINT> primes_vector;
-	ifstream FILE_read;
-	FILE_read.open("128.txt");
-
 	LINT E;
 	LINT N;
 	LINT D;
+	LINT P;
+	LINT Q;
+	LINT origin_D;
 
-	int reader;
+	int keys[5] = {64, 128, 256, 512, 1024};
+	
+	for (int counter = 0; counter < 5; counter++)
+	{
+		Prime_Number_Generator(keys[counter], &P, &Q);
+		Vulnerable_Generator(P, Q, &E, &N, &origin_D);
 
-	while (FILE_read >> reader)
-		primes_vector.push_back(reader);
-
-	Vulnerable_Generator(primes_vector, &E, &N);
-
-	cout << "Starting Vinere attack with E: " << E.decstr();
-	cout << " and N: " << N.decstr() << endl;
-
-	Vinere(E, N, &D);
-	cout << "The key is: " << D.decstr() << endl;
-
+#ifdef DBG_PRINT
+		cout << "Starting Vinere attack with E: " << E.decstr();
+		cout << " and N: " << N.decstr() << endl;
+#endif
+		int time = GetTickCount();
+		Vinere(E, N, &D);
+#ifdef DBG_PRINT
+		cout << "The key is: " << D.decstr() << endl;
+#endif
+		if (origin_D == D)
+			cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+	}
 	return 0;
 }
 
