@@ -1,7 +1,4 @@
-﻿// LongArithmetics.cpp: îïðåäåëÿåò òî÷êó âõîäà äëÿ êîíñîëüíîãî ïðèëîæåíèÿ.
-//
-
-#pragma once
+﻿#pragma once
 #include "stdafx.h"
 
 const int n = 10000;
