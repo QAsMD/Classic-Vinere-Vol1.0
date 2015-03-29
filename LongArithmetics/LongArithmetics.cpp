@@ -3,6 +3,7 @@
 
 const int n = 10000;
 //#define DBG_PRINT
+#define RAND_MAX 100
 
 using namespace std;
 
@@ -198,13 +199,23 @@ void Vulnerable_Generator(
 	return;
 }
 
+/*
+	Produces two random prime numbers
+	by generating random number and taking
+	next nearest prime one
+
+	Arguments:
+		length - the number of bits in result prime numbers
+		P - first number
+		Q - second number
+*/
 void Prime_Number_Generator(
 	__in int length,
 	__out LINT *P,
 	__out LINT *Q)
 {
-	*P = findprime(length);
-	*Q = nextprime(*P + 1, 3);
+	*P = nextprime(randl(length) + 1, 3);
+	*Q = nextprime(randl(length) + 1, 3);
 }
 
 
