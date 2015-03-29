@@ -2,8 +2,8 @@
 #include "stdafx.h"
 
 const int n = 10000;
-//#define DBG_PRINT
-#define RAND_MAX 100
+#define DBG_PRINT
+#define MAXIMUM_RANDOM 100
 
 using namespace std;
 
@@ -229,9 +229,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT Q;
 	LINT origin_D;
 
-	int keys[5] = { 64, 128, 256, 512, 1024 };
+	int keys[6] = { 64, 128, 256, 512, 1024, 2048};
 
-	for (int counter = 0; counter < 5; counter++)
+	for (int counter = 0; counter < sizeof(keys); counter++)
 	{
 		Prime_Number_Generator(keys[counter], &P, &Q);
 		Vulnerable_Generator(P, Q, &E, &N, &origin_D);
