@@ -64,18 +64,19 @@ void Convergent(
 }
 
 /*
-Function extended_euclid
-This function calculates coefficients a, b and GCD(a,b)
-in comparison a*x+b*y=GCD(a,b)
-The answer is stored three LINT: x,y,d
-Arguments:
-a - the first coefficient in comparison
-b - the second coefficient in comparison
-x - the first variable in comparison
-y - the second variable in comparison
-d - greatest common divisor of a and b
-Return value:
-None
+	Function extended_euclid
+	This function calculates coefficients a, b and GCD(a,b)
+	in comparison a*x+b*y=GCD(a,b)
+	The answer is stored three LINT: x,y,d
+	Arguments:
+	a - the first coefficient in comparison
+	b - the second coefficient in comparison
+	x - the first variable in comparison
+	y - the second variable in comparison
+	d - greatest common divisor of a and b
+	
+	Return value:
+	None
 */
 
 void extended_euclid(
@@ -109,16 +110,17 @@ void extended_euclid(
 }
 
 /*
-Function Vinere
-This function calculates the private part of key
-with using open part of key (E,N)
-The answer is the private part of key D
-Arguments:
-E - the first part of public key
-N - the second part of public key
-D - the part of private key
-Return value:
-None
+	Function Vinere
+	This function calculates the private part of key
+	with using open part of key (E,N)
+	The answer is the private part of key D
+	Arguments:
+	E - the first part of public key
+	N - the second part of public key
+	D - the part of private key
+
+	Return value:
+	None
 */
 
 void Vinere(
@@ -150,16 +152,17 @@ void Vinere(
 }
 
 /*
-Function Vulnerable_Generator
-This function recieves public part of key from
-couple p,q
-The answer is the public part of key E,N
-Arguments:
-primes_vector - vector primes
-*E - the first part of public key
-*N - the second part of public key
-Return value:
-None
+	Function Vulnerable_Generator
+	This function recieves public part of key from
+	couple p,q
+	The answer is the public part of key E,N
+	Arguments:
+	primes_vector - vector primes
+	*E - the first part of public key
+	*N - the second part of public key
+
+	Return value:
+	None
 */
 
 void Vulnerable_Generator(
@@ -182,7 +185,7 @@ void Vulnerable_Generator(
 		if ((*E < *N) && (NOD == 1) && (gcd(*E, eiler_func) == 1))
 		{
 #ifdef DBG_PRINT
-			cout << "Eiler: " << eiler_func.decstr() << endl;
+			cout << endl <<  "Eiler: " << eiler_func.decstr() << endl;
 			cout << "Finished generating E, D and N." << endl;
 			cout << "E is " << (*E).decstr() << endl;
 			cout << "D is " << limitD.decstr() << endl;
@@ -208,6 +211,9 @@ void Vulnerable_Generator(
 		length - the number of bits in result prime numbers
 		P - first number
 		Q - second number
+
+	Return value:
+	None
 */
 void Prime_Number_Generator(
 	__in int length,
@@ -229,7 +235,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT Q;
 	LINT origin_D;
 
-	int keys[6] = { 64, 128, 256, 512, 1024, 2048};
+	int keys[6] = { 64, 128, 256, 512, 1024, 2048 };
 
 	for (int counter = 0; counter < sizeof(keys); counter++)
 	{
