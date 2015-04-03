@@ -3,6 +3,7 @@
 
 const int n = 10000;
 //#define DBG_PRINT
+#define KEY_TXT_PRINT
 #define MAXIMUM_RANDOM 100
 #define KEY_NOT_FOUND "-1"
 
@@ -234,6 +235,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT P;
 	LINT Q;
 	LINT origin_D;
+	
+#ifdef KEY_TXT_PRINT
+			ofstream FILE;
+			string rez = "";
+			FILE.open("key for debug.txt");
+#endif
 
 	while (1 == 1)
 	{
@@ -267,7 +274,21 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 				if (origin_D == D)
 					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+
+#ifdef KEY_TXT_PRINT				
+				rez += E.decstr();
+				rez += "\n";
+				rez += N.decstr();
+				rez += "\n";
+				rez += D.decstr();
+				rez += "\n\n";
+				FILE << rez;
+#endif
 			}
+
+#ifdef KEY_TXT_PRINT
+			FILE.close();
+#endif
 		}
 		break;
 		case '2':
