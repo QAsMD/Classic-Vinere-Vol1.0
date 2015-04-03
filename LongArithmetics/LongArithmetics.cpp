@@ -2,8 +2,9 @@
 #include "stdafx.h"
 
 const int n = 10000;
-#define DBG_PRINT
+//#define DBG_PRINT
 #define MAXIMUM_RANDOM 100
+#define KEY_NOT_FOUND "-1"
 
 using namespace std;
 
@@ -133,21 +134,20 @@ void Vinere(
 
 	Convergent(E, N, potential_D);
 
-	for (LINT M = 2; M < N; M++)
+	LINT M = "100101010";
+	LINT LC = mexp(M, E, N);
+	for (int i = 1; i < n; i++)
 	{
-		LINT LC = mexp(M, E, N);
-		for (int i = 1; i < n; i++)
-		{
-			if (limitD < potential_D[i]) break;
-			LINT M2 = mexp(LC, potential_D[i], N);
+		if (limitD < potential_D[i]) break;
+		LINT M2 = mexp(LC, potential_D[i], N);
 
-			if (M == M2)
-			{
-				*D = potential_D[i];
-				return;
-			}
+		if (M == M2)
+		{
+			*D = potential_D[i];
+			return;
 		}
 	}
+	*D = KEY_NOT_FOUND;
 	return;
 }
 
@@ -235,24 +235,94 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT Q;
 	LINT origin_D;
 
-	int keys[6] = { 64, 128, 256, 512, 1024, 2048 };
-
-	for (int counter = 0; counter < sizeof(keys); counter++)
+	while (1 == 1)
 	{
-		Prime_Number_Generator(keys[counter], &P, &Q);
-		Vulnerable_Generator(P, Q, &E, &N, &origin_D);
+		char choice;
+
+		cout << "\nPlease, choose what option you want:\n		1 - Generate vulnerable keys with specified length and break them\n		2 - Input prepared keys from file keys.txt and test them for being vulnerable\n		3 - Exit\n";
+		scanf(" %c", &choice);
+
+		switch (choice) {
+		case '1':
+		{
+			int keys[6] = { 64, 128, 256, 512, 1024, 2048 };
+
+			for (int counter = 0; counter < sizeof(keys); counter++)
+			{
+				Prime_Number_Generator(keys[counter], &P, &Q);
+				Vulnerable_Generator(P, Q, &E, &N, &origin_D);
 
 #ifdef DBG_PRINT
-		cout << "Starting Vinere attack with E: " << E.decstr();
-		cout << " and N: " << N.decstr() << endl;
+				cout << "Starting Vinere attack with E: " << E.decstr();
+				cout << " and N: " << N.decstr() << endl;
 #endif
-		int time = GetTickCount();
-		Vinere(E, N, &D);
+				int time = GetTickCount();
+				Vinere(E, N, &D);
 #ifdef DBG_PRINT
-		cout << "The key is: " << D.decstr() << endl;
+				cout << "The key is: " << D.decstr() << endl;
 #endif
-		if (origin_D == D)
-			cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+				if (origin_D == D)
+					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+			}
+		}
+		break;
+		case '2':
+		{
+			string line_E;
+			string line_N;
+			ifstream myfile("keys.txt");
+			LINT lint_E;
+			LINT lint_N;
+			LINT output_D;
+			int length;
+
+			if (!myfile.is_open())
+			{
+				cout << "Couldn't open file, error." << endl;
+				goto clean0;
+			}
+
+			while (myfile.good())
+			{
+				getline(myfile, line_E);
+				lint_E = LINT(line_E.c_str());
+				getline(myfile, line_N);
+				lint_N = LINT(line_N.c_str());
+
+				// For one-string keys with equal E and N length
+				//length = line.length();
+				//string str_E = line.substr(0, length/2);
+				//string str_N = line.substr(length / 2, length / 2);
+				//lint_E = LINT(str_E.c_str());
+				//lint_N = LINT(str_N.c_str());
+#ifdef DBG_PRINT
+				cout << "Starting Vinere attack with E: " << E.decstr();
+				cout << " and N: " << N.decstr() << endl;
+#endif
+				int time = GetTickCount();
+				Vinere(lint_E, lint_N, &output_D);
+				if (output_D != KEY_NOT_FOUND)
+				{
+					cout << "The key is: " << output_D.decstr() << endl;
+					cout << "For key length " << (line_E.length() + line_N.length()) << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+				}
+				else
+				{
+					cout << "The key is not vulnerable to Vinere attack. Moving to next key." << endl;
+				}
+			}
+		}
+		break;
+		case '3':
+		{
+			goto clean0;
+		}
+		break;
+		default:
+			cout << "Invalid choice specified. Re-enter your choice" << endl;
+		}
 	}
+
+clean0:
 	return 0;
 }
