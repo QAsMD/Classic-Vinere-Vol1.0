@@ -239,7 +239,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		char choice;
 
-		cout << "\nPlease, choose what option you want:\n		1 - Generate vulnerable keys with specified length and break them\n		2 - Input prepared keys from file keys.txt and test them for being vulnerable\n		3 - Exit\n";
+		cout << "\nPlease, choose what option you want:\n";
+		cout << "1 - Generate vulnerable keys with specified length and break them\n";
+		cout << "2 - Input prepared keys from file keys.txt and test them for being vulnerable\n";
+		cout << "3 - Exit\n";
+		
 		scanf(" %c", &choice);
 
 		switch (choice) {
@@ -296,8 +300,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				//lint_E = LINT(str_E.c_str());
 				//lint_N = LINT(str_N.c_str());
 #ifdef DBG_PRINT
-				cout << "Starting Vinere attack with E: " << E.decstr();
-				cout << " and N: " << N.decstr() << endl;
+				cout << "Starting Vinere attack with E: " << lint_E.decstr();
+				cout << " and N: " << lint_N.decstr() << endl;
 #endif
 				int time = GetTickCount();
 				Vinere(lint_E, lint_N, &output_D);
