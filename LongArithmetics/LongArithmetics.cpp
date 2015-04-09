@@ -1,69 +1,13 @@
 ﻿#pragma once
 #include "stdafx.h"
 
-const int n = 10000;
-//#define DBG_PRINT
+#define DBG_PRINT
 #define KEY_TXT_PRINT
 #define MAXIMUM_RANDOM 100
 #define KEY_NOT_FOUND "-1"
 
 using namespace std;
 
-/*
-Function convergent
-This function calculates continued fraction's
-denominator for specified E and N.
-The answer is stored two LINT array Q[n]
-Arguments:
-E - the first part of public key
-N - the second part of public key
-*Q - pointer to denominator array
-
-Return value:
-None
-*/
-
-void Convergent(
-	__in	LINT E,
-	__in	LINT N,
-	__out	LINT* Q)
-{
-	LINT V[n];
-	LINT H[n];
-	LINT Z[n];
-
-	for (int k = 0; k < n; k++)
-	{
-		H[k] = Z[k] = V[k] = Q[k] = 0;
-	}
-
-	H[0] = E;
-	Z[0] = N;
-
-	for (int i = 0; i< (n - 1); i++)
-	{
-		if (Z[i] == 0) { break; }
-		else
-		{
-			V[i] = H[i] / Z[i];
-
-
-			Z[i + 1] = H[i] - Z[i] * V[i];
-			H[i + 1] = Z[i];
-		}
-	}
-	Q[0] = 1;
-	Q[1] = V[1];
-
-	for (int i = 2; i < n - 1; i++)
-	{
-
-		//cout << endl << "V[" << i << "]= " << V[i].decstr();
-		if ((V[i]) == 0) break;
-		Q[i] = Q[i - 1] * V[i] + Q[i - 2];
-		//cout << "Q[i]: " << Q[i].decstr() << endl;
-	}
-}
 
 /*
 	Function extended_euclid
@@ -131,26 +75,56 @@ void Vinere(
 	__out LINT *D,
 	__out int *key_index)
 {
-	LINT potential_D[n];
+	vector<LINT> V;
+	vector<LINT> H;
+	vector<LINT> Z;
+
+	H.push_back(E);
+	Z.push_back(N);
+	vector<LINT> potential_D;
 	LINT limitD = root(root(N / 3)) - 1;
 
-	Convergent(E, N, potential_D);
-
-	LINT M = "100101010";
+	LINT M = "10010101001011111";
 	LINT LC = mexp(M, E, N);
-	for (int i = 1; i < n; i++)
+
+	for (unsigned int i = 0;; i++)
 	{
-		if (limitD < potential_D[i]) break;
+		if (Z[i] == 0) { break; }
+		else
+		{
+			V.push_back(H[i] / Z[i]);
+			Z.push_back(H[i] - Z[i] * V[i]);
+			H.push_back(Z[i]);
+		}
+		if (i == 0)
+			potential_D.push_back(1);
+		else if (i == 1)
+			potential_D.push_back(V[i]);
+		else
+		{
+			if ((V[i]) == 0) break;
+			potential_D.push_back(potential_D[i - 1] * V[i] + potential_D[i - 2]);
+
+		}
+	
 		LINT M2 = mexp(LC, potential_D[i], N);
 
 		if (M == M2)
 		{
 			*D = potential_D[i];
 			*key_index = i;
+			cout << "Key found index " << i << endl;
+			return;
+		}
+
+		if (potential_D[i] > limitD)
+		{
+			(*D) = KEY_NOT_FOUND;
+			cout << "Key not found" << endl;
 			return;
 		}
 	}
-	*D = KEY_NOT_FOUND;
+	cout << "ERROR!! Left endless loop!!!" << endl;
 	return;
 }
 
@@ -223,8 +197,14 @@ void Prime_Number_Generator(
 	__out LINT *P,
 	__out LINT *Q)
 {
-	*P = nextprime(randl(length) + 1, 3);
-	*Q = nextprime(randl(length) + 1, 3);
+	*P = nextprime(randl(length) + 1, 1);
+#ifdef DBG_PRINT
+	cout << "The P is " << (*P).decstr() << endl;
+#endif
+	*Q = nextprime(randl(length) + 1, 1);
+#ifdef DBG_PRINT
+	cout << "The Q is " << (*Q).decstr() << endl;
+#endif
 }
 
 
@@ -259,9 +239,9 @@ int _tmain(int argc, _TCHAR* argv[])
 		switch (choice) {
 		case '1':
 		{
-			int keys[6] = {64, 128, 256, 512, 1024, 2048 };
+			vector<int> keys = {64, 128, 256, 512, 1024, 2048 /*4096*/};
 
-			for (int counter = 0; counter < sizeof(keys); counter++)
+			for (int counter = 0; counter < keys.size(); counter++)
 			{
 				Prime_Number_Generator(keys[counter], &P, &Q);
 				Vulnerable_Generator(P, Q, &E, &N, &origin_D);
@@ -273,10 +253,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				int time = GetTickCount();
 				Vinere(E, N, &D, &key_index);
 #ifdef DBG_PRINT
-				cout << "The key is: " << D.decstr() << endl;
+					cout << "The key is: " << D.decstr() << endl;
 #endif
 				if (origin_D == D)
-					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets";
+					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets" << endl;
 
 #ifdef KEY_TXT_PRINT				
 				rez += E.decstr();
@@ -302,7 +282,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			LINT lint_E;
 			LINT lint_N;
 			LINT output_D;
-			int length;
 
 			if (!myfile.is_open())
 			{
@@ -310,7 +289,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				goto clean0;
 			}
 
-			while (myfile.good())
+			while (!myfile.eof())
 			{
 				getline(myfile, line_E);
 				lint_E = LINT(line_E.c_str());
