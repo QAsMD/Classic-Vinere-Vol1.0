@@ -128,7 +128,8 @@ void extended_euclid(
 void Vinere(
 	__in LINT E,
 	__in LINT N,
-	__out LINT *D)
+	__out LINT *D,
+	__out int *key_index)
 {
 	LINT potential_D[n];
 	LINT limitD = root(root(N / 3)) - 1;
@@ -145,6 +146,7 @@ void Vinere(
 		if (M == M2)
 		{
 			*D = potential_D[i];
+			*key_index = i;
 			return;
 		}
 	}
@@ -235,6 +237,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT P;
 	LINT Q;
 	LINT origin_D;
+	int key_index = 0;
 	
 #ifdef KEY_TXT_PRINT
 			ofstream FILE;
@@ -256,7 +259,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		switch (choice) {
 		case '1':
 		{
-			int keys[6] = { 64, 128, 256, 512, 1024, 2048 };
+			int keys[6] = {64, 128, 256, 512, 1024, 2048 };
 
 			for (int counter = 0; counter < sizeof(keys); counter++)
 			{
@@ -268,12 +271,12 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << " and N: " << N.decstr() << endl;
 #endif
 				int time = GetTickCount();
-				Vinere(E, N, &D);
+				Vinere(E, N, &D, &key_index);
 #ifdef DBG_PRINT
 				cout << "The key is: " << D.decstr() << endl;
 #endif
 				if (origin_D == D)
-					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets";
 
 #ifdef KEY_TXT_PRINT				
 				rez += E.decstr();
@@ -325,11 +328,11 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << " and N: " << lint_N.decstr() << endl;
 #endif
 				int time = GetTickCount();
-				Vinere(lint_E, lint_N, &output_D);
+				Vinere(lint_E, lint_N, &output_D, &key_index);
 				if (output_D != KEY_NOT_FOUND)
 				{
 					cout << "The key is: " << output_D.decstr() << endl;
-					cout << "For key length " << (line_E.length() + line_N.length()) << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl;
+					cout << "For key length " << (line_E.length() + line_N.length()) << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets" << endl;
 				}
 				else
 				{
