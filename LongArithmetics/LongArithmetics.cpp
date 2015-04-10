@@ -219,11 +219,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT origin_D;
 	int key_index = 0;
 	
-#ifdef KEY_TXT_PRINT
-			ofstream FILE;
-			string rez = "";
-			FILE.open("key for debug.txt");
-#endif
+
 
 	while (1 == 1)
 	{
@@ -239,6 +235,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		switch (choice) {
 		case '1':
 		{
+
+#ifdef KEY_TXT_PRINT
+					ofstream FILE;
+					string rez = "";
+					FILE.open("key for debug.txt");
+#endif
 			vector<int> keys = {64, 128, 256, 512, 1024, 2048 /*4096*/};
 
 			for (int counter = 0; counter < keys.size(); counter++)
