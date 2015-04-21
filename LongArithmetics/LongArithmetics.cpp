@@ -242,7 +242,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					string rez = "";
 					FILE.open("key for debug.txt");
 #endif
-			vector<int> keys = {4096}; //  выбираем размеры ключей, которые будем геренировать
+			vector<int> keys = {2048, 2048, 2048, 2048}; //  выбираем размеры ключей, которые будем геренировать
 
 			for (int counter = 0; counter < keys.size(); counter++)
 			{
@@ -259,7 +259,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					cout << "The key is: " << D.decstr() << endl;
 #endif
 				if (origin_D == D)
-					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets" << endl;
+					cout << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets" << endl;
 
 #ifdef KEY_TXT_PRINT				
 				rez += E.decstr();
