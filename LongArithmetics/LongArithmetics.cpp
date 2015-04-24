@@ -242,7 +242,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					string rez = "";
 					FILE.open("key for debug.txt");
 #endif
-			vector<int> keys = {2048, 2048, 2048, 2048}; //  выбираем размеры ключей, которые будем геренировать
+					vector<int> keys = { 512, 512, 512}; //  выбираем размеры ключей, которые будем геренировать
 
 			for (int counter = 0; counter < keys.size(); counter++)
 			{
@@ -265,8 +265,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				rez += E.decstr();
 				rez += "\n";
 				rez += N.decstr();
-				rez += "\n";
-				rez += D.decstr();
+				//rez += "\n";
+				//rez += D.decstr();
 				rez += "\n\n";
 				FILE << rez;
 #endif
@@ -281,6 +281,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			string line_E;
 			string line_N;
+			string clear;
 			ifstream myfile("keys.txt");
 			LINT lint_E;
 			LINT lint_N;
@@ -298,6 +299,9 @@ int _tmain(int argc, _TCHAR* argv[])
 				lint_E = LINT(line_E.c_str());
 				getline(myfile, line_N);
 				lint_N = LINT(line_N.c_str());
+
+				if (!myfile.eof())
+					getline(myfile, clear);
 
 				// For one-string keys with equal E and N length
 				//length = line.length();
