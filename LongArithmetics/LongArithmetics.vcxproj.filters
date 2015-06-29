@@ -35,9 +35,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="LongArithmetics.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="flintcpp.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
