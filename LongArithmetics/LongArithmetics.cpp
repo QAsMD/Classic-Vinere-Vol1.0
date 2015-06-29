@@ -1,10 +1,10 @@
 ﻿#pragma once
 #include "stdafx.h"
 
-#define DBG_PRINT
-#define KEY_TXT_PRINT
-#define MAXIMUM_RANDOM 100
-#define KEY_NOT_FOUND "-1"
+//#define DBG_PRINT		//  определение, указывающее, нужно ли выводить информацию по дебагу
+#define KEY_TXT_PRINT	//  определение, укащывающее, нужно ли выводить ключи в файл 
+#define MAXIMUM_RANDOM 100	//  служебное определение
+#define KEY_NOT_FOUND "-1"	//  код ошибки, вызываемый в случае, если ключ не найден
 
 using namespace std;
 
@@ -34,6 +34,7 @@ void extended_euclid(
 
 
 	/* calculates a * *x + b * *y = gcd(a, b) = *d */
+	//  стандартная реализация расширенного алгоритма Евклида
 
 {
 
@@ -75,19 +76,19 @@ void Vinere(
 	__out LINT *D,
 	__out int *key_index)
 {
-	vector<LINT> V;
+	vector<LINT> V; //  определяем массивы (векторы), необходимые для получения подходящих дробей
 	vector<LINT> H;
 	vector<LINT> Z;
 
-	H.push_back(E);
+	H.push_back(E); //  задаем начальные значения первых подходящих дробей
 	Z.push_back(N);
-	vector<LINT> potential_D;
-	LINT limitD = root(root(N / 3)) - 1;
+	vector<LINT> potential_D;	//  массив с потенциальными частями секретного ключа
+	LINT limitD = root(root(N / 3)) - 1;	//  ограничение на значение секретной части ключа
 
-	LINT M = "10010101001011111";
-	LINT LC = mexp(M, E, N);
+	LINT M = "10010101001011111";	//  смоделированный исходный тект
+	LINT LC = mexp(M, E, N);		//  находим M^E (mod N)
 
-	for (unsigned int i = 0;; i++)
+	for (unsigned int i = 0;; i++)   //  вычисляем подходящие дроби
 	{
 		if (Z[i] == 0) { break; }
 		else
@@ -107,17 +108,17 @@ void Vinere(
 
 		}
 	
-		LINT M2 = mexp(LC, potential_D[i], N);
+		LINT M2 = mexp(LC, potential_D[i], N);  //  вычисляем значение, с которым будем сравнивать исходный смоделированный текст
 
-		if (M == M2)
+		if (M == M2)		//  сравниваем исходный и полученный тексты
 		{
 			*D = potential_D[i];
 			*key_index = i;
-			cout << "Key found index " << i << endl;
+			//cout << "Key found index " << i << endl;
 			return;
 		}
 
-		if (potential_D[i] > limitD)
+		if (potential_D[i] > limitD)   //  если элемент массива с потенциальными частями секретного ключа больше, чем полученное ограничение, то ключ не найден
 		{
 			(*D) = KEY_NOT_FOUND;
 			cout << "Key not found" << endl;
@@ -153,13 +154,13 @@ void Vulnerable_Generator(
 	LINT koef;
 
 	*N = mul(p, q);
-	LINT eiler_func = mul((p - 1), (q - 1));
+	LINT eiler_func = mul((p - 1), (q - 1));		//  подготавливаем необходимые константы для проведения вычислений
 	LINT limitD = root(root((*N) / 3)) - 1;
 	for (; limitD > 0; limitD--)
 	{
-		extended_euclid(limitD, eiler_func, E, &koef, &NOD); // E - îòâåò
+		extended_euclid(limitD, eiler_func, E, &koef, &NOD); //  Находим Е
 
-		if ((*E < *N) && (NOD == 1) && (gcd(*E, eiler_func) == 1))
+		if ((*E < *N) && (NOD == 1) && (gcd(*E, eiler_func) == 1)) //  проверяем полученный ключ на валидность
 		{
 #ifdef DBG_PRINT
 			cout << endl <<  "Eiler: " << eiler_func.decstr() << endl;
@@ -197,7 +198,7 @@ void Prime_Number_Generator(
 	__out LINT *P,
 	__out LINT *Q)
 {
-	*P = nextprime(randl(length) + 1, 1);
+	*P = nextprime(randl(length) + 1, 1);		//  генерируем простые числа
 #ifdef DBG_PRINT
 	cout << "The P is " << (*P).decstr() << endl;
 #endif
@@ -219,13 +220,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	LINT origin_D;
 	int key_index = 0;
 	
-#ifdef KEY_TXT_PRINT
-			ofstream FILE;
-			string rez = "";
-			FILE.open("key for debug.txt");
-#endif
 
-	while (1 == 1)
+
+	while (true)
 	{
 		char choice;
 
@@ -239,7 +236,13 @@ int _tmain(int argc, _TCHAR* argv[])
 		switch (choice) {
 		case '1':
 		{
-			vector<int> keys = {64, 128, 256, 512, 1024, 2048 /*4096*/};
+
+#ifdef KEY_TXT_PRINT
+					ofstream FILE;
+					string rez = "";
+					FILE.open("key for debug.txt");
+#endif
+					vector<int> keys = { 512, 512, 512}; //  выбираем размеры ключей, которые будем геренировать
 
 			for (int counter = 0; counter < keys.size(); counter++)
 			{
@@ -251,19 +254,19 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << " and N: " << N.decstr() << endl;
 #endif
 				int time = GetTickCount();
-				Vinere(E, N, &D, &key_index);
+				Vinere(E, N, &D, &key_index);		//  проводим атаку на полученную пару E N
 #ifdef DBG_PRINT
 					cout << "The key is: " << D.decstr() << endl;
 #endif
 				if (origin_D == D)
-					cout << "For key length " << keys[counter] << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets" << endl;
+					cout << " Vinere succedeed in " << GetTickCount() - time << " ticks" << endl << "The key was " << key_index << " in the divisors array of corvengets" << endl;
 
 #ifdef KEY_TXT_PRINT				
 				rez += E.decstr();
 				rez += "\n";
 				rez += N.decstr();
-				rez += "\n";
-				rez += D.decstr();
+				//rez += "\n";
+				//rez += D.decstr();
 				rez += "\n\n";
 				FILE << rez;
 #endif
@@ -278,6 +281,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		{
 			string line_E;
 			string line_N;
+			string clear;
 			ifstream myfile("keys.txt");
 			LINT lint_E;
 			LINT lint_N;
@@ -291,10 +295,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			while (!myfile.eof())
 			{
-				getline(myfile, line_E);
+				getline(myfile, line_E); //  читаем из файла значения
 				lint_E = LINT(line_E.c_str());
 				getline(myfile, line_N);
 				lint_N = LINT(line_N.c_str());
+
+				if (!myfile.eof())
+					getline(myfile, clear);
 
 				// For one-string keys with equal E and N length
 				//length = line.length();
