@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "stdafx.h"
 
-//#define DBG_PRINT		//  определение, указывающее, нужно ли выводить информацию по дебагу
+#define DBG_PRINT		//  определение, указывающее, нужно ли выводить информацию по дебагу
 #define KEY_TXT_PRINT	//  определение, укащывающее, нужно ли выводить ключи в файл 
 #define MAXIMUM_RANDOM 100	//  служебное определение
 #define KEY_NOT_FOUND "-1"	//  код ошибки, вызываемый в случае, если ключ не найден
@@ -108,6 +108,7 @@ void Vinere(
 
 		}
 	
+		cout << "\\\ " << potential_D[i].decstr() << " ///" << endl;
 		LINT M2 = mexp(LC, potential_D[i], N);  //  вычисляем значение, с которым будем сравнивать исходный смоделированный текст
 
 		if (M == M2)		//  сравниваем исходный и полученный тексты
@@ -242,7 +243,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					string rez = "";
 					FILE.open("key for debug.txt");
 #endif
-					vector<int> keys = { 512, 512, 512}; //  выбираем размеры ключей, которые будем геренировать
+					vector<int> keys = {32};//512, 512, 512}; //  выбираем размеры ключей, которые будем геренировать
 
 			for (int counter = 0; counter < keys.size(); counter++)
 			{
